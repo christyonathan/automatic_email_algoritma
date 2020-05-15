@@ -90,12 +90,12 @@ def compose_email(template, name, data_dict):
   """
   composed = template.substitute(
     PERSON_NAME=name,
-    START_DATE=data_dict[___],
-    END_DATE=data_dict[___],
-    TOTAL_SPENT="{:,}".format(data_dict[___]),
-    TOTAL_CONVERSION="{:,}".format(data_dict[___]),
+    START_DATE=data_dict['start_date'],
+    END_DATE=data_dict['end_date'],
+    TOTAL_SPENT="{:,}".format(data_dict['total_spent']),
+    TOTAL_CONVERSION="{:,}".format(data_dict['total_conversion']),
     CPC=unroll_sentence(data_dict['cpc']),
-    GITHUB_LINK='https://github.com/tiaradwiputri/fire-capstone'
+    GITHUB_LINK='https://github.com/christyonathan/automatic_email_algoritma'
   )
   return composed
 
@@ -127,7 +127,7 @@ def create_plot(file_path="data_input/data.csv", id=['936', '1178']):
 
   # Create a grouped dataframe based on campaign id, age group, and reporting date
   # Calculate the total converision of each group
-  grouped = campaigns.groupby(by=['___', '___', '___'], as_index=False)['___'].___
+  grouped = campaigns.groupby(by=['campaign_id', 'age', 'reporting_start'], as_index=False)['total_conversion'].sum()
 
   fig = plt.figure(1, figsize=(15,6))
 
@@ -135,9 +135,9 @@ def create_plot(file_path="data_input/data.csv", id=['936', '1178']):
   for i, campaign in enumerate(grouped.campaign_id.unique()):
     plt.subplot(1, len(id), i+1)
     
-    df = grouped[grouped[___] == campaign].loc[:,['age', 'reporting_start', 'total_conversion']]
+    df = grouped[grouped['campaign_id'] == campaign].loc[:,['age', 'reporting_start', 'total_conversion']]
     df['reporting_start'] = df['reporting_start'].dt.date
-    pivot = df.pivot(index='___', columns='___', values='___').fillna(0)
+    pivot = df.pivot(index='reporting_start', columns='age', values='total_conversion').fillna(0)
     pivot.plot.bar(ax=plt.gca())
 
   fig.suptitle('Campaign Conversion per Age Group', fontsize=20)
@@ -149,12 +149,12 @@ def create_plot(file_path="data_input/data.csv", id=['936', '1178']):
   return(imagename)
 
 def main(subject, \
-  contact_file='___', \
+  contact_file='templates/contacts.txt', \
   template_file='templates/body.txt', \
   data_file='data_input/data.csv'):
   """   
   Main function for application
-  """
+  """ 
 
   # // TODO: CHALLENGE 1
   # // Understanding function
